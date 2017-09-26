@@ -60,22 +60,32 @@ void start(std::string inputText, int stateSize, int outputSize) {
 
 enum MarkovMode { Char, Word };
 
-int main() {
+int main(int argc, char* argv[]) {
     std::srand(std::time(0));
 
     std::string modeStr;
     MarkovMode mode;
-
     std::string filename;
-    cout << "File name: ";
-    cin >> filename;
-    cout << endl;
-    
-    std::ifstream istream(filename);
-    if (!istream) {
-        cout << "Cannot read file!" << endl;
+    if (argc == 3) {
+        modeStr = argv[1];
+        filename = argv[2];
+    }
+    else {
+        std::cerr << "Invalid arguments." << std::endl;
         return 1;
     }
+    if (modeStr == "-c") {
+        mode = MarkovMode::Char;
+    }
+    else if (modeStr == "-s") {
+        mode = MarkovMode::Word;
+    }
+    else {
+        std::cerr << "Invalid mode string." << std::endl;
+        return 2;
+    }
+
+    std::ifstream istream(filename);
 
     int stateSize;
     cout << "Markov chain length: ";
@@ -102,7 +112,20 @@ int main() {
     }
     cout << "Removed whitespace." << endl;
 
-    start(text, stateSize, outputSize);
+    switch(mode) {
+        case MarkovMode::Char: {
+            start(text, stateSize, outputSize);
+            break;
+        }
+        case MarkovMode::Word: {
+            std::istream_iterator<std::string> begin(wordStream);
+            std::istream_iterator<std::string> end;
+            std::vector<std::string> words(begin, end);
+            cout << "Unimplemented..." << endl;
+            break;
+        }
+
+    }
 
     return 0;
 }
