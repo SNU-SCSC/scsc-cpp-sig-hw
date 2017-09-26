@@ -19,47 +19,14 @@ using NextChars = std::vector<char>;
 using MarkovMap = std::unordered_map<MarkovState, NextChars>;
 
 void start(std::string inputText, int stateSize, int outputSize) {
-    MarkovMap markovMap;
-
-    std::vector<char> markovKey(inputText.begin(), inputText.begin() + stateSize);
-    for (auto it = inputText.begin() + stateSize;
-         it != inputText.end() - stateSize;
-         ++it) {
-        char nextChar = *it;
-
-        MarkovState markovState(markovKey.begin(), markovKey.end());
-        markovMap[markovState].push_back(nextChar);
-
-        markovKey.erase(markovKey.begin());
-        markovKey.push_back(nextChar);
-    }
-    cout << "Created markov chain." << endl;
-
-    MarkovMap::size_type randIndex = std::rand() % markovMap.size();
-    auto randEntry = std::next(std::begin(markovMap), randIndex);
-    MarkovState startSeed = randEntry->first;
-    cout << "Selected random seed as: "
-         << std::string(startSeed.begin(), startSeed.end()) << endl;
-
-    std::string generatedText(startSeed.begin(), startSeed.end());
-
-    std::vector<char> currentKey(startSeed.begin(), startSeed.end());
-    for (int i = 0; i < outputSize; i++) {
-        MarkovState markovState(currentKey.begin(), currentKey.end());
-
-        auto nextCharIt = selectRandom(markovMap[markovState]);
-        char nextChar = *nextCharIt;
-        generatedText += nextChar;
-
-        currentKey.erase(currentKey.begin());
-        currentKey.push_back(nextChar);
-    }
-
-    cout << "Finished generating text: \n" << generatedText << endl;
+    // Put your code in here...
 }
 
 int main() {
     std::srand(std::time(0));
+
+    std::string modeStr;
+    MarkovMode mode;
 
     std::string filename;
     cout << "File name: ";
