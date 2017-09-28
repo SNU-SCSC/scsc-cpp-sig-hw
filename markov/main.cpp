@@ -6,10 +6,28 @@
 #include <unordered_map>
 #include <algorithm>
 #include <regex>
+#include <chrono>
 
 template<typename T>
 auto selectRandom(const std::vector<T>& vec) {
     return std::next(vec.begin(), std::rand() % vec.size());
+}
+
+decltype(std::chrono::high_resolution_clock::now()) curTime;
+std::chrono::duration<double> diffTime;
+
+void timerStart() {
+    curTime = std::chrono::high_resolution_clock::now();
+}
+
+void timerEnd() {
+    auto prevTime = curTime;
+    curTime = std::chrono::high_resolution_clock::now();
+    diffTime = curTime - prevTime;
+}
+
+void printElapsedTime() {
+    std::cout << "Elapsed: " << diffTime.count() << "s" << std::endl;
 }
 
 using std::cout; using std::cin; using std::endl;
@@ -19,6 +37,8 @@ using NextChars = std::vector<char>;
 using MarkovMap = std::unordered_map<MarkovState, NextChars>;
 
 void start(std::string inputText, int stateSize, int outputSize) {
+    timerStart();
+
     MarkovMap markovMap;
 
     std::vector<char> markovKey(inputText.begin(), inputText.begin() + stateSize);
@@ -33,14 +53,20 @@ void start(std::string inputText, int stateSize, int outputSize) {
         markovKey.erase(markovKey.begin());
         markovKey.push_back(nextChar);
     }
+    timerEnd();
     cout << "Created markov chain." << endl;
+    printElapsedTime();
 
+    timerStart();
     MarkovMap::size_type randIndex = std::rand() % markovMap.size();
     auto randEntry = std::next(std::begin(markovMap), randIndex);
     MarkovState startSeed = randEntry->first;
+    timerEnd();
     cout << "Selected random seed as: "
          << std::string(startSeed.begin(), startSeed.end()) << endl;
+    printElapsedTime();
 
+    timerStart();
     std::string generatedText(startSeed.begin(), startSeed.end());
 
     std::vector<char> currentKey(startSeed.begin(), startSeed.end());
@@ -55,7 +81,9 @@ void start(std::string inputText, int stateSize, int outputSize) {
         currentKey.push_back(nextChar);
     }
 
+    timerEnd();
     cout << "Finished generating text: \n" << generatedText << endl;
+    printElapsedTime();
 }
 
 int main() {
