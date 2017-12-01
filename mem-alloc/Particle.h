@@ -6,8 +6,15 @@
 #define MEM_ALLOC_PARTICLE_H
 
 #include <SFML/Graphics/CircleShape.hpp>
+#include <cassert>
 #include "Game.h"
 #include "Constants.h"
+
+constexpr const float& clamp(const float& v, const float& lo, const float& hi)
+{
+    return assert( hi > lo ),
+            v < lo ? lo : hi < v ? hi : v;
+}
 
 class Particle {
 public:
@@ -64,7 +71,7 @@ public:
 
     void draw(sf::RenderWindow& window) {
         auto green = static_cast<uint8_t>(
-            std::clamp(255 * (lifetime / origLifetime), 0.f, 255.f)
+            clamp(255 * (lifetime / origLifetime), 0.f, 255.f)
         );
         ball.setFillColor(sf::Color(255, green, 0));
         window.draw(ball);
